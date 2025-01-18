@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة التحكم</title>
+    
+    <!-- استيراد الخطوط -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Cairo', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: #f5f5f5;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* الهيدر */
+        .header {
+            background-color: #45395ad4;
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between; /* توزيع العناصر بين اليمين واليسار */
+            align-items: center;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            margin-left: 20px;
+            text-align: right; /* جعل العنوان في الجهة اليمنى */
+            flex: 1;
+        }
+
+        /* القائمة العلوية */
+        .menu {
+            list-style: none;
+            display: flex;
+            gap: 20px;
+            padding: 0;
+            margin: 0;
+            text-align: left; /* محاذاة القائمة لليسار */
+        }
+
+        .menu li {
+            display: inline;
+        }
+
+        .menu li a {
+            color: white;
+            text-decoration: none;
+            font-size: 16px;
+            transition: color 0.3s;
+        }
+
+        .menu li a:hover {
+            color: #1abc9c;
+        }
+
+        /* زر القائمة في الهاتف */
+        .menu-toggle {
+            display: none;
+            font-size: 24px;
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            position: absolute;
+            top: 15px;
+            left: 20px;
+            z-index: 1001;
+        }
+
+        /* جعل القائمة متوافقة مع الهواتف */
+        @media (max-width: 768px) {
+            .header {
+                justify-content: space-between; /* توزيع الهيدر بين اليمين واليسار */
+                padding: 15px 10px;
+            }
+
+            .header h1 {
+                text-align: right; /* محاذاة العنوان في الجهة اليمنى */
+                margin-left: 0;
+            }
+
+            .menu {
+                display: flex;
+                flex-direction: column;
+                background: #333;
+                width: 100%;
+                text-align: center;
+                position: absolute;
+                top: 0;
+                left: 0;
+                padding: 10px 0;
+                z-index: 1000;
+                transform: translateY(-100%);
+                transition: transform 0.3s ease-in-out;
+                margin-left: 0;
+            }
+
+            .menu li {
+                padding: 10px;
+            }
+
+            .menu-toggle {
+                display: block;
+            }
+
+            /* تعديل طريقة عرض القائمة عند تفعيل السلايد */
+            .menu.open {
+                transform: translateY(0);
+            }
+        }
+
+        /* محتوى عرض الـ PDF */
+        .pdf-container {
+            width: 90%;
+            max-width: 1000px;
+            margin: 20px auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        #pdf-viewer {
+            width: 100%;
+            border: none;
+        }
+
+        .nav-buttons {
+            margin-top: 10px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .nav-buttons button {
+            background-color: #45395ad4;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 0 5px;
+            border-radius: 5px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .nav-buttons button:hover {
+            background-color: #333;
+        }
+
+        /* الفوتر */
+        .footer {
+            background-color: #1a1a2e;
+            color: white;
+            padding: 30px 0;
+            text-align: center;
+            margin-top: auto;
+        }
+
+        .footer-container {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .footer-section {
+            flex: 1;
+            min-width: 250px;
+            margin-bottom: 20px;
+        }
+
+        .footer-section h3 {
+            border-bottom: 2px solid #3498db;
+            display: inline-block;
+            padding-bottom: 5px;
+            margin-bottom: 10px;
+        }
+
+        .footer-section ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .footer-section ul li {
+            margin: 5px 0;
+        }
+
+        .footer-section ul li a, 
+        .footer-section p a {
+            color: #3498db;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-section ul li a:hover,
+        .footer-section p a:hover {
+            color: #1abc9c;
+        }
+
+        .footer-bottom {
+            margin-top: 20px;
+            padding-top: 10px;
+            border-top: 1px solid #444;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- الهيدر -->
+    <div class="header">
+        <ul class="menu" id="menu">
+            <li><a href="#">Home</a></li>
+            <li><a href="#">About</a></li>
+            <li><a href="#">Services</a></li>
+            <li><a href="#">Portfolio</a></li>
+            <li><a href="#">Contact</a></li>
+        </ul>
+        <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+        <h1>لوحة التحكم</h1>
+    </div>
+
+    <!-- عرض المحاضرة -->
+    <div class="pdf-container">
+        <h2>عرض المحاضرة</h2>
+        <canvas id="pdf-viewer"></canvas>
+        <div class="nav-buttons">
+            <button id="prev-page">السابق</button>
+            <button id="next-page">التالي</button>
+        </div>
+    </div>
+
+    <!-- الفوتر -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-section">
+                <p>منصة تعليمية تهدف إلى تسهيل الوصول إلى المحاضرات والموارد التعليمية لدعم الطلاب في مسيرتهم الدراسية.</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>جميع الحقوق محفوظة © 2025</p>
+        </div>
+    </footer>
+
+    <!-- كود JavaScript لتشغيل القائمة المنسدلة -->
+    <script>
+        function toggleMenu() {
+            var menu = document.getElementById("menu");
+            menu.classList.toggle("open");
+        }
+
+        let pdfDoc = null;
+        let currentPage = 1;
+        const scale = 7.5;
+        const canvas = document.getElementById('pdf-viewer');
+        const ctx = canvas.getContext('2d');
+
+        // تحميل ملف PDF
+        pdfjsLib.getDocument('123.pdf').promise.then(function (pdf) {
+            pdfDoc = pdf;
+            renderPage(currentPage);
+        });
+
+        function renderPage(pageNum) {
+            pdfDoc.getPage(pageNum).then(function (page) {
+                const viewport = page.getViewport({ scale: scale });
+                canvas.height = viewport.height;
+                canvas.width = viewport.width;
+
+                page.render({
+                    canvasContext: ctx,
+                    viewport: viewport
+                });
+            });
+        }
+
+        document.getElementById('next-page').addEventListener('click', function () {
+            if (currentPage < pdfDoc.numPages) {
+                currentPage++;
+                renderPage(currentPage);
+            }
+        });
+
+        document.getElementById('prev-page').addEventListener('click', function () {
+            if (currentPage > 1) {
+                currentPage--;
+                renderPage(currentPage);
+            }
+        });
+    </script>
+
+</body>
+</html>
